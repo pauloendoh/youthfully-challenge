@@ -24,11 +24,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 ) => {
   const id = String(context.query.id);
   const url = urls.api.imageDetails(id);
-  console.log({
-    url,
-  });
+
   const res = await myAxios.get<ImageDetails>(url).catch((e) => {
-    console.log(e.message);
     throw e;
   });
 

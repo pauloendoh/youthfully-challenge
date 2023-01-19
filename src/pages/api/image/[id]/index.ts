@@ -10,11 +10,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const id = String(req.query.id);
 
-    const url = urls.others.imgurImageDetails(id);
-    console.log({
-      backendUrl: url,
-    });
-
     const response = await myAxios.get<ImageResponse>(
       urls.others.imgurImageDetails(id),
       {

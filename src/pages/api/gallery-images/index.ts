@@ -20,10 +20,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       window: String(query.window),
     });
 
-    console.log({
-      url,
-    });
-
     const response = await myAxios.get<GalleryResponse>(url, {
       headers: {
         Authorization: "Client-ID " + CLIENT_ID,
