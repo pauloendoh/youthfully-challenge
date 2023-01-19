@@ -1,12 +1,12 @@
+import { Checkbox, Container, GridItem } from "@chakra-ui/react";
+
 import axios from "axios";
 
-import { Box, Button, Flex, HStack, VStack } from "@chakra-ui/react";
+import { Box, Button, Flex, HStack } from "@chakra-ui/react";
 
-import { useState } from "react";
-import ImageContainer from "../components/search-page/ImageContainer";
-import SectionSelector from "../components/search-page/SectionSelector";
-import SortSelector from "../components/search-page/SortSelector";
-import WindowSelector from "../components/search-page/WindowSelector";
+import { useMemo, useState } from "react";
+import FilterRow from "../components/search-page/FilterRow/FilterRow";
+import ImageContainer from "../components/search-page/ImageContainer/ImageContainer";
 import { useImagesStore } from "../hooks/zustand/useImagesStore";
 import { IGaleryImage } from "../types/gallery/GalleryResponse";
 import { IFilter } from "../types/IFilter";
@@ -36,42 +36,48 @@ const Index = () => {
       .finally(() => setIsLoading(false));
   };
 
+  const filteredImages = useMemo(() => {
+    return images.filter((image) => {
+      if (filter.onlyViralImages) {
+        return image.in_most_viral;
+      }
+      return true;
+    });
+  }, [images, filter.onlyViralImages]);
+
   return (
-    <VStack height="100vh">
+    <Container height="100vh" maxW="container.xl">
       <Box mt={4}>
-        <HStack width="100%" justifyContent="space-between">
-          <SectionSelector
-            value={filter.section}
-            onChange={(value) => setFilter({ ...filter, section: value })}
-          />
+        <FilterRow filter={filter} setFilter={setFilter} />
 
-          <SortSelector
-            value={filter.sort}
-            onChange={(value) => setFilter({ ...filter, sort: value })}
-          />
+        <HStack justifyContent={"center"} mt={2} gap={4}>
+          <Checkbox
+            checked={filter.onlyViralImages}
+            onChange={(e) =>
+              setFilter({ ...filter, onlyViralImages: e.target.checked })
+            }
+          >
+            Viral Images
+          </Checkbox>
 
-          <WindowSelector
-            value={filter.window}
-            onChange={(value) => setFilter({ ...filter, window: value })}
-          />
-        </HStack>
-
-        <HStack width="100%" justifyContent={"space-between"} mt={2}>
-          <div></div>
           <Button onClick={handleSearch} isLoading={isLoading}>
             Search
           </Button>
         </HStack>
       </Box>
 
-      <Box mt={4}>
-        <Flex style={{ gap: 24, flexWrap: "wrap", justifyContent: "center" }}>
-          {images.map((image) => (
-            <ImageContainer key={image.id} image={image} />
-          ))}
-        </Flex>
-      </Box>
-    </VStack>
+      <Flex
+        mt={10}
+        pb={20}
+        style={{ gap: 24, flexWrap: "wrap", justifyContent: "center" }}
+      >
+        {filteredImages.map((image) => (
+          <GridItem key={image.id}>
+            <ImageContainer image={image} />
+          </GridItem>
+        ))}
+      </Flex>
+    </Container>
   );
 };
 

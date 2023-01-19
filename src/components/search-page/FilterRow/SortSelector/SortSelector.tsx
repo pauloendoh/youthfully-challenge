@@ -1,27 +1,28 @@
 import { FormControl, FormLabel, Select } from "@chakra-ui/react";
-import { SectionType } from "../../types/IFilter";
+import { SortType } from "../../../../types/IFilter";
 
 type Props = {
-  value: SectionType;
-  onChange: (value: SectionType) => void;
+  value: SortType;
+  onChange: (value: SortType) => void;
 };
 
 const options: {
-  value: SectionType;
+  value: SortType;
   label: string;
 }[] = [
-  { value: "hot", label: "Hot" },
+  { value: "viral", label: "Viral" },
   { value: "top", label: "Top" },
-  { value: "user", label: "User" },
+  { value: "time", label: "Time" },
+  { value: "rising", label: "Rising" },
 ];
 
-const SectionSelector = (props: Props) => {
+const SortSelector = (props: Props) => {
   return (
     <FormControl>
-      <FormLabel>Section</FormLabel>
+      <FormLabel>Sort</FormLabel>
       <Select
         value={props.value}
-        onChange={(e) => props.onChange(e.target.value as SectionType)}
+        onChange={(e) => props.onChange(e.target.value as SortType)}
       >
         {options.map((option) => (
           <option key={option.value} value={option.value}>
@@ -33,4 +34,4 @@ const SectionSelector = (props: Props) => {
   );
 };
 
-export default SectionSelector;
+export default SortSelector;

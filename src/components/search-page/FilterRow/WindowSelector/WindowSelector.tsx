@@ -1,5 +1,5 @@
 import { FormControl, FormLabel, Select } from "@chakra-ui/react";
-import { WindowType } from "../../types/IFilter";
+import { WindowType } from "../../../../types/IFilter";
 
 type Props = {
   value: WindowType;
