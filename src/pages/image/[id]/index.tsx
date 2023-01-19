@@ -10,9 +10,9 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import axios from "axios";
 import { GetServerSideProps } from "next";
 import { ImageDetails } from "../../../types/image/ImageResponse";
+import myAxios from "../../../utils/myAxios";
 import { urls } from "../../../utils/urls";
 
 type Props = {
@@ -27,7 +27,10 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   console.log({
     url,
   });
-  const res = await axios.get<ImageDetails>(url);
+  const res = await myAxios.get<ImageDetails>(url).catch((e) => {
+    console.log(e.message);
+    throw e;
+  });
 
   return {
     props: {

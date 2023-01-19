@@ -4,6 +4,7 @@ import {
   GalleryResponse,
   IGaleryImage,
 } from "../../../types/gallery/GalleryResponse";
+import myAxios from "../../../utils/myAxios";
 import { urls } from "../../../utils/urls";
 
 const { CLIENT_ID } = process.env;
@@ -23,7 +24,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       url,
     });
 
-    const response = await axios.get<GalleryResponse>(url, {
+    const response = await myAxios.get<GalleryResponse>(url, {
       headers: {
         Authorization: "Client-ID " + CLIENT_ID,
       },

@@ -1,13 +1,11 @@
-const NEXT_PUBLIC_BASE_URL = String(process.env.NEXT_PUBLIC_BASE_URL);
-
 export const urls = {
   pages: {
     index: "/",
     imageDetails: (id: string) => `/image/${id}`,
   },
   api: {
-    galleryImages: `${NEXT_PUBLIC_BASE_URL}/api/gallery-images`,
-    imageDetails: (id: string) => `${NEXT_PUBLIC_BASE_URL}/api/image/${id}`,
+    galleryImages: `/api/gallery-images`,
+    imageDetails: (id: string) => `/api/image/${id}`,
   },
   others: {
     imgurGallery: (params?: {
