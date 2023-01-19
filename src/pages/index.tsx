@@ -1,56 +1,78 @@
-import {
-  Link as ChakraLink,
-  Text,
-  Code,
-  List,
-  ListIcon,
-  ListItem,
-} from '@chakra-ui/react'
-import { CheckCircleIcon, LinkIcon } from '@chakra-ui/icons'
+import axios from "axios";
 
-import { Hero } from '../components/Hero'
-import { Container } from '../components/Container'
-import { Main } from '../components/Main'
-import { DarkModeSwitch } from '../components/DarkModeSwitch'
-import { CTA } from '../components/CTA'
-import { Footer } from '../components/Footer'
+import { Box, Button, Flex, HStack, VStack } from "@chakra-ui/react";
 
-const Index = () => (
-  <Container height="100vh">
-    <Hero />
-    <Main>
-      <Text>
-        Example repository of <Code>Next.js</Code> + <Code>chakra-ui</Code> +{' '}
-        <Code>typescript</Code>.
-      </Text>
+import { useState } from "react";
+import ImageContainer from "../components/search-page/ImageContainer";
+import SectionSelector from "../components/search-page/SectionSelector";
+import SortSelector from "../components/search-page/SortSelector";
+import WindowSelector from "../components/search-page/WindowSelector";
+import { useImagesStore } from "../hooks/zustand/useImagesStore";
+import { IGaleryImage } from "../types/gallery/GalleryResponse";
+import { IFilter } from "../types/IFilter";
+import { urls } from "../utils/urls";
 
-      <List spacing={3} my={0}>
-        <ListItem>
-          <ListIcon as={CheckCircleIcon} color="green.500" />
-          <ChakraLink
-            isExternal
-            href="https://chakra-ui.com"
-            flexGrow={1}
-            mr={2}
-          >
-            Chakra UI <LinkIcon />
-          </ChakraLink>
-        </ListItem>
-        <ListItem>
-          <ListIcon as={CheckCircleIcon} color="green.500" />
-          <ChakraLink isExternal href="https://nextjs.org" flexGrow={1} mr={2}>
-            Next.js <LinkIcon />
-          </ChakraLink>
-        </ListItem>
-      </List>
-    </Main>
+const Index = () => {
+  const [filter, setFilter] = useState<IFilter>({
+    page: 0,
+    sort: "viral",
+    window: "day",
+    section: "hot",
+    onlyViralImages: false,
+  });
 
-    <DarkModeSwitch />
-    <Footer>
-      <Text>Next ❤️ Chakra</Text>
-    </Footer>
-    <CTA />
-  </Container>
-)
+  const [isLoading, setIsLoading] = useState(false);
 
-export default Index
+  const { images, setImages } = useImagesStore();
+
+  const handleSearch = async () => {
+    setIsLoading(true);
+    axios
+      .get<IGaleryImage[]>(urls.api.galleryImages, {
+        params: filter,
+      })
+      .then((res) => setImages(res.data))
+      .catch((e) => alert(e.message))
+      .finally(() => setIsLoading(false));
+  };
+
+  return (
+    <VStack height="100vh">
+      <Box mt={4}>
+        <HStack width="100%" justifyContent="space-between">
+          <SectionSelector
+            value={filter.section}
+            onChange={(value) => setFilter({ ...filter, section: value })}
+          />
+
+          <SortSelector
+            value={filter.sort}
+            onChange={(value) => setFilter({ ...filter, sort: value })}
+          />
+
+          <WindowSelector
+            value={filter.window}
+            onChange={(value) => setFilter({ ...filter, window: value })}
+          />
+        </HStack>
+
+        <HStack width="100%" justifyContent={"space-between"} mt={2}>
+          <div></div>
+          <Button onClick={handleSearch} isLoading={isLoading}>
+            Search
+          </Button>
+        </HStack>
+      </Box>
+
+      <Box mt={4}>
+        <Flex style={{ gap: 24, flexWrap: "wrap", justifyContent: "center" }}>
+          {images.map((image) => (
+            <ImageContainer key={image.id} image={image} />
+          ))}
+        </Flex>
+      </Box>
+    </VStack>
+  );
+};
+
+export default Index;
